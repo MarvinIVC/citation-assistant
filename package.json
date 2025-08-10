@@ -1,0 +1,10 @@
+{
+  "name": "citation-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "netlify dev",
+    "build": "echo 'Static site — no build step'",
+    "serve": "npx serve ."
+  }
+}
