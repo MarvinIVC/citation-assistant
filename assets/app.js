@@ -93,7 +93,7 @@ async function onFetchDOI() {
   const doi = normalizeDOI(raw);
   try {
     startBusy("#fetchDOI");
-    const res = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
+    const res = await fetch(`/.netlify/functions/doiMeta?doi=${encodeURIComponent(doi)}`, {
       headers: {
         "User-Agent": "CitationAssistant/1.0 (mailto:you@example.com)"
       }
