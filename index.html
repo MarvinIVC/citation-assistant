@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Citation Assistant — MLA, APA, Chicago</title>
+  <meta name="description" content="Generate MLA 9, APA 7, and Chicago citations from URLs, DOIs, ISBNs, or manual input.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg width='256' height='256' xmlns='http://www.w3.org/2000/svg'%3E%3Crect rx='48' width='256' height='256' fill='%230b2239'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' font-size='120' font-family='Georgia' fill='%23ffffff'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">📚</div>
+        <div class="titles">
+          <h1>Citation Assistant</h1>
+          <p>MLA 9 • APA 7 • Chicago (Author–Date)</p>
+        </div>
+      </div>
+      <div class="controls">
+        <label class="style-select">
+          <span>Style</span>
+          <select id="styleSelect">
+            <option value="mla">MLA 9</option>
+            <option value="apa">APA 7</option>
+            <option value="chicago">Chicago (Author–Date)</option>
+          </select>
+        </label>
+        <button id="exportAll" class="btn secondary">Export All</button>
+        <button id="clearAll" class="btn danger">Clear</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel input-panel">
+        <div class="tabs">
+          <button class="tab active" data-tab="url">From URL</button>
+          <button class="tab" data-tab="doi">From DOI</button>
+          <button class="tab" data-tab="isbn">From ISBN</button>
+          <button class="tab" data-tab="manual">Manual</button>
+        </div>
+
+        <div class="tab-content active" id="tab-url">
+          <label>Paste a webpage or article URL</label>
+          <div class="row">
+            <input id="urlInput" type="url" placeholder="https://example.com/article" />
+            <button id="fetchURL" class="btn">Fetch</button>
+          </div>
+          <p class="hint">We’ll fetch metadata and format it for your chosen style.</p>
+        </div>
+
+        <div class="tab-content" id="tab-doi">
+          <label>Enter a DOI (with or without https://doi.org/)</label>
+          <div class="row">
+            <input id="doiInput" type="text" placeholder="10.1038/s41586-020-2649-2" />
+            <button id="fetchDOI" class="btn">Fetch</button>
+          </div>
+          <p class="hint">Uses Crossref to retrieve article details.</p>
+        </div>
+
+        <div class="tab-content" id="tab-isbn">
+          <label>Enter an ISBN (10 or 13)</label>
+          <div class="row">
+            <input id="isbnInput" type="text" placeholder="9780143127796" />
+            <button id="fetchISBN" class="btn">Fetch</button>
+          </div>
+          <p class="hint">Uses Open Library to retrieve book details.</p>
+        </div>
+
+        <div class="tab-content" id="tab-manual">
+          <div class="form-grid">
+            <div>
+              <label>Title</label>
+              <input id="m-title" type="text" placeholder="Title of work" />
+            </div>
+            <div>
+              <label>Authors (one per line, 'Last, First' or 'First Last')</label>
+              <textarea id="m-authors" rows="3" placeholder="Doe, Jane&#10;Smith, John"></textarea>
+            </div>
+            <div>
+              <label>Container (journal/website/book)</label>
+              <input id="m-container" type="text" placeholder="Journal or website name" />
+            </div>
+            <div>
+              <label>Publisher</label>
+              <input id="m-publisher" type="text" placeholder="Publisher" />
+            </div>
+            <div>
+              <label>Year</label>
+              <input id="m-year" type="number" min="0" placeholder="2023" />
+            </div>
+            <div>
+              <label>Volume</label>
+              <input id="m-volume" type="text" placeholder="12" />
+            </div>
+            <div>
+              <label>Issue</label>
+              <input id="m-issue" type="text" placeholder="3" />
+            </div>
+            <div>
+              <label>Pages</label>
+              <input id="m-pages" type="text" placeholder="45-62" />
+            </div>
+            <div>
+              <label>DOI</label>
+              <input id="m-doi" type="text" placeholder="10.xxxx/xxxxx" />
+            </div>
+            <div>
+              <label>URL</label>
+              <input id="m-url" type="url" placeholder="https://..." />
+            </div>
+            <div>
+              <label>Published date (YYYY-MM-DD)</label>
+              <input id="m-date" type="text" placeholder="2023-05-18" />
+            </div>
+          </div>
+          <button id="addManual" class="btn">Add citation</button>
+        </div>
+      </section>
+
+      <section class="panel list-panel">
+        <div class="list-header">
+          <h2>Your citations</h2>
+          <div class="actions">
+            <button id="sortAZ" class="btn pill">Sort A→Z</button>
+            <button id="sortTime" class="btn pill">Sort by added</button>
+          </div>
+        </div>
+        <ul id="citationsList" class="citations"></ul>
+      </section>
+    </main>
+
+    <aside class="tips">
+      <details>
+        <summary>Style tips</summary>
+        <ul>
+          <li><strong>MLA 9:</strong> Uses title case for titles, quotes for articles, italics for containers. Access date for web is common.</li>
+          <li><strong>APA 7:</strong> Sentence case for titles, title case for containers. Prefer DOI as URL if available.</li>
+          <li><strong>Chicago AD:</strong> Author–date with year after author. Include DOI or URL; access date optional for undated web pages.</li>
+        </ul>
+      </details>
+    </aside>
+
+    <footer class="footer">
+      <span>Made for students. Smooth, fast, accurate.</span>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="./assets/app.js" type="module"></script>
+</body>
+</html>
