@@ -11,7 +11,7 @@ exports.handler = async function (event) {
 
   try {
     const res = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
-      headers: { "User-Agent": "CitationAssistant/1.0 (mailto:you@example.com)" }
+      headers: { "User-Agent": "CitationAssistant/1.0 (mailto:admin@mwsys.xyz)" }
     });
 
     if (!res.ok) {
